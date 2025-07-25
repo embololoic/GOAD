@@ -19,6 +19,7 @@ GOAD is an excellent tool for learning about Active Directory environments, atta
 - [Vagrant](https://www.vagrantup.com/downloads)
 - [VirtualBox](https://www.virtualbox.org/)
 - [Git](https://git-scm.com/downloads)
+- GitBash
 - Basic knowledge of Windows command line
 
 ## Installation
@@ -43,7 +44,7 @@ GOAD is an excellent tool for learning about Active Directory environments, atta
     - The lab environment will be provisioned automatically.
 
 5. **Accessing the Lab**
-    - Follow the documentation in [`doc/lab_setup.md`](doc/lab_setup.md) for post-deployment steps and credentials.
+    - Follow the documentation in [`doc/lab_setup.md`](doc/lab_setup_english.md) for post-deployment steps and credentials.
 
 ## Documentation
 
