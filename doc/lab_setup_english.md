@@ -1,78 +1,74 @@
-# Documentation d’Installation du Lab GOAD (Graph of Active Directory)
 
-## 1. Prérequis
+# GOAD (Graph of Active Directory) Lab Installation Guide
 
-### Système hôte
+## 1. Prerequisites
 
-* Windows 10 ou 11 (64 bits)
+### Host System
 
-### Outils à installer
+- Windows 10 or 11 (64-bit)
 
-1. **Git Bash** : [https://gitforwindows.org/](https://gitforwindows.org/)
-2. **VirtualBox** : [https://www.virtualbox.org/](https://www.virtualbox.org/)
-3. **Vagrant** : [https://www.vagrantup.com/](https://www.vagrantup.com/)
-4. **Python** (à partir de 3.8, idéalement 3.11) : [https://www.python.org/downloads/](https://www.python.org/downloads/)
+### Required Tools
 
-### Variables d'environnement
+1. **Git Bash**: [https://gitforwindows.org/](https://gitforwindows.org/)
+2. **VirtualBox**: [https://www.virtualbox.org/](https://www.virtualbox.org/)
+3. **Vagrant**: [https://www.vagrantup.com/](https://www.vagrantup.com/)
+4. **Python** (version 3.8 and up, ideally 3.11): [https://www.python.org/downloads/](https://www.python.org/downloads/)
 
-Vérifiez que Python et Vagrant sont bien ajoutés dans la variable `PATH`. Pour `poetry` (optionnel), ajoutez manuellement sa variable d’environnement si nécessaire.
+### Environment Variables
 
----
+Ensure that Python and Vagrant are added to your `PATH` environment variable.  
+If you use `poetry` (optional), make sure to manually add its environment variable if needed.
 
-## 2. Récupération du projet GOAD
+## 2. Cloning the GOAD Project
 
 ```bash
 git clone https://github.com/Orange-Cyberdefense/GOAD.git
 cd GOAD
 ```
 
----
+## 3. Initializing the Python Environment
 
-## 3. Initialisation de l’environnement Python
+### The `goad.sh` Script
 
-### Script `goad.sh`
+The `goad.sh` script is provided with the project. It allows you to:
 
-Le script `goad.sh` est fourni avec le projet. Il permet :
+- Create a Python virtual environment in `~/.goad/.venv`
+- Install dependencies from `requirements.yml` or `requirements_311.yml`
+- Launch `goad.py`
 
-* de créer un environnement virtuel Python dans `~/.goad/.venv`
-* d’installer les dépendances depuis `requirements.yml` ou `requirements_311.yml`
-* de lancer `goad.py`
+### Recommended `goad.sh` Modifications
 
-### Modification recommandée de `goad.sh`
+Replace `source $venv/bin/activate` with `source $venv/Scripts/activate` if you’re on Windows.
 
-Remplacez `source $venv/bin/activate` par `source $venv/Scripts/activate` si vous êtes sous Windows.
-
-Ajoutez des logs pour faciliter le débogage :
+Add logs for easier debugging:
 
 ```bash
-echo "[INFO] Activation de l’environnement virtuel..."
-echo "[INFO] Lancement de goad.py avec les arguments : $@"
+echo "[INFO] Activating the virtual environment..."
+echo "[INFO] Launching goad.py with arguments: $@"
 ```
 
-### Exemple d'exécution dans Git Bash
+### Example Execution in Git Bash
 
 ```bash
 ./goad.sh
 ```
 
-**Si une erreur `ModuleNotFoundError` survient (ex : `rich` ou `jinja2`) :**
+**If a `ModuleNotFoundError` error appears (e.g. for `rich` or `jinja2`):**
 
 ```bash
 source ~/.goad/.venv/Scripts/activate
 pip install rich jinja2
 ```
 
----
+## 4. Deploying the Virtual Machines
 
-## 4. Déploiement des machines virtuelles
-
-### Chemin du Vagrantfile
+### Path to the Vagrantfile
 
 ```bash
 cd GOAD/ad/GOAD/providers/virtualbox/
 ```
 
-### Contenu du `Vagrantfile`
+### Example `Vagrantfile` Content
 
 ```ruby
 Vagrant.configure("2") do |config|
@@ -102,39 +98,35 @@ Vagrant.configure("2") do |config|
 end
 ```
 
-### Lancer les machines
+### Starting the Machines
 
 ```bash
-vagrant up       # pour toutes les VMs
-vagrant up GOAD-DC01   # pour une seule
+vagrant up             # starts all VMs
+vagrant up GOAD-DC01   # starts only one VM
 ```
 
-### Nombre total de VMs
+### Total Number of VMs
 
-Il y a **5 machines virtuelles** à déployer selon la configuration fournie.
+There are **5 virtual machines** to be deployed with the provided configuration.
 
----
+## 5. Default VM Credentials
 
-## 5. Mots de passe des VMs (par défaut)
+- **Username**: `vagrant`
+- **Password**: `vagrant`
 
-* **Utilisateur** : `vagrant`
-* **Mot de passe** : `vagrant`
+## 6. Troubleshooting: WinRM Error
 
----
-
-## 6. Dépannage : WinRM Error
-
-Erreur courante :
+Common error:
 
 ```
 WSMAN ERROR CODE: 2147942421 - The device is not ready
 ```
 
-Cela peut être causé par un démarrage lent ou une configuration WinRM incorrecte.
+This may be caused by a slow boot or incorrect WinRM configuration.
 
 ### Solution
 
-Exécuter dans une session PowerShell Admin sur la VM :
+Run the following commands in an Admin PowerShell session *inside the VM*:
 
 ```powershell
 Set-Item -Path WSMan:\localhost\Service\AllowUnencrypted -Value $true
@@ -142,9 +134,7 @@ Set-Item -Path WSMan:\localhost\Service\Auth\Basic -Value $true
 Restart-Service WinRM
 ```
 
----
-
-## 7. Capture illustrative (exemple)
+## 7. Example Folder Structure
 
 ```
 GOAD
@@ -158,17 +148,13 @@ GOAD
                 ├── inventory
 ```
 
----
+## 8. Launching GOAD
 
-## 8. Lancement de GOAD
-
-Une fois les VMs déployées et Python prêt :
+Once the VMs are deployed and Python is ready:
 
 ```bash
 source ~/.goad/.venv/Scripts/activate
 ./goad.sh
 ```
 
----
-
-Pour toute erreur supplémentaire, n’hésite pas à les noter dans une section "FAQ" à ajouter.
+For any other errors, feel free to note them in an additional "FAQ" section.
